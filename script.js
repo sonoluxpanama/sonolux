@@ -276,31 +276,23 @@ form.addEventListener("submit", async (e) => {
   data._subject = `Nueva solicitud: ${data.event_type} — ${data.event_date} — ${data.name}`;
   data._template = "table";
 
-  const btn = form.querySelector("button[type=submit]");
-  btn.disabled = true;
+  // 1) WhatsApp is the main channel: open it right away (inside the click, so it isn't blocked)
+  const lines = [
+    t("Nueva solicitud de evento", "New event request"),
+    `${t("Nombre", "Name")}: ${data.name}`, `${t("Teléfono", "Phone")}: ${data.phone}`, `Email: ${data.email}`,
+    `${t("Evento", "Event")}: ${data.event_type} — ${data.event_date}`, `${t("Lugar", "Venue")}: ${data.venue_city}`,
+    `${t("Invitados", "Guests")}: ${data.guest_count || "-"}`, `${t("Servicios", "Services")}: ${data.services}`, data.message || "",
+  ];
+  window.open(waLink(lines.join("\n")), "_blank");
+  msg.className = "form-msg ok";
+  msg.textContent = t("¡Listo! Se abrió WhatsApp con tu solicitud: solo dale a enviar.", "Done! WhatsApp opened with your request — just hit send.");
+
+  // 2) A copy also goes to the business email in the background
   if (CONFIG.formEndpoint) {
-    try {
-      const r = await fetch(CONFIG.formEndpoint, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(data) });
-      if (!r.ok) throw new Error(r.status);
-      form.reset(); renderFormServices();
-      msg.className = "form-msg ok";
-      msg.textContent = t("¡Gracias! Tu solicitud fue enviada. Te contactaremos pronto.", "Thanks! Your request was sent. We'll get back to you soon.");
-    } catch (err) {
-      msg.className = "form-msg err";
-      msg.textContent = t("Algo salió mal. Escríbenos por WhatsApp.", "Something went wrong. Please message us on WhatsApp.");
-    }
-  } else {
-    const lines = [
-      t("Nueva solicitud de evento", "New event request"),
-      `${t("Nombre", "Name")}: ${data.name}`, `${t("Teléfono", "Phone")}: ${data.phone}`, `Email: ${data.email}`,
-      `${t("Evento", "Event")}: ${data.event_type} — ${data.event_date}`, `${t("Lugar", "Venue")}: ${data.venue_city}`,
-      `${t("Invitados", "Guests")}: ${data.guest_count || "-"}`, `${t("Servicios", "Services")}: ${data.services}`, data.message || "",
-    ];
-    window.open(waLink(lines.join("\n")), "_blank");
-    msg.className = "form-msg ok";
-    msg.textContent = t("Abriendo WhatsApp con tu solicitud…", "Opening WhatsApp with your request…");
+    fetch(CONFIG.formEndpoint, { method: "POST", keepalive: true, headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(data) })
+      .then(() => { form.reset(); renderFormServices(); })
+      .catch(() => {});
   }
-  btn.disabled = false;
 });
 $$("[required]", form).forEach((f) => f.addEventListener("input", () => f.classList.remove("invalid")));
 }
