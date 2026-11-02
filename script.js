@@ -6,8 +6,8 @@ const CONFIG = {
   phone: "+50766141455",          // from Instagram bio
   phoneDisplay: "+507 6614-1455",
   whatsapp: "50766141455",        // digits only
-  email: "",                      // pending: client's email
-  formEndpoint: "",               // pending: FormSubmit endpoint (empty = form opens WhatsApp)
+  email: "info@sonoluxpanama.com",
+  formEndpoint: "https://formsubmit.co/ajax/info@sonoluxpanama.com", // swap for the hashed endpoint after activation
   instagram: "https://www.instagram.com/sonolux_panama/",
   facebook: "",
   tiktok: "",
