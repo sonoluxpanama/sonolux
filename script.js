@@ -7,7 +7,7 @@ const CONFIG = {
   phoneDisplay: "+507 6614-1455",
   whatsapp: "50766141455",        // digits only
   email: "info@sonoluxpanama.com",
-  formEndpoint: "https://formsubmit.co/ajax/info@sonoluxpanama.com", // swap for the hashed endpoint after activation
+  formEndpoint: "https://formsubmit.co/ajax/462857f8febe63f3ee57046f9e182ed1", // FormSubmit (activated) → info@sonoluxpanama.com
   instagram: "https://www.instagram.com/sonolux_panama/",
   facebook: "",
   tiktok: "",
